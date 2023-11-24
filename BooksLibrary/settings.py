@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-from celery import Celery
 
 import os
 
@@ -27,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b&4b_=%*%e!gf^(i%sbo(pg%szc#!i!05beiv1gw3b#arw@lad'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,13 +128,13 @@ DATABASES = {
         'NAME': os.environ.get('NAME_DB'),
         'USER': os.environ.get('USER_DB'),
         'PASSWORD': os.environ.get('PASSWORD_DB'),
-        'HOST': 'db',  # Название сервиса контейнера базы данных MySQL из docker-compose.yml
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
 
 # Настройки Celery
-CELERY_BROKER_URL = 'redis://redis:6379/0'  # URL брокера Redis из docker-compose.yml
+CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -144,7 +143,7 @@ CELERY_TIMEZONE = 'UTC'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST')  # Замените на соответствующий SMTP-сервер
-EMAIL_PORT = 465  # Уточните порт для вашего почтового сервера
+EMAIL_PORT = os.environ.get('EMAIL_PORT')  # Уточните порт для вашего почтового сервера
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')

@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-  # Сервис для вашего Django-приложения
   web:
     build: .
     command: ["./wait-for-it.sh", "db:3306", "--", "sh", "-c", "python manage.py migrate && gunicorn BooksLibrary.wsgi:application -b 0.0.0.0:8000"]
@@ -13,7 +12,6 @@ services:
       - db
       - redis
 
-  # Сервис для базы данных MySQL
   db:
     image: mysql:latest
     environment:
@@ -26,7 +24,6 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql  -
 
-  # Сервис для брокера Redis
   redis:
     image: "redis:alpine"
     ports:
