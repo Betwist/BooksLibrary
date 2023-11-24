@@ -43,9 +43,6 @@ SECRET_KEY = Ваш Django SECRET_KEY, данный ключ располога�
         return secret_key
 
     print(generate_secret_key())
- 
-
-
 ```
 ### Использование
 
