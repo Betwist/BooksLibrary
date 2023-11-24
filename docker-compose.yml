@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: ["./wait-for-it.sh", "db:3306", "--", "sh", "-c", "python manage.py migrate && gunicorn BooksLibrary.wsgi:application -b 0.0.0.0:8000"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: $NAME_DB
+      MYSQL_USER: $USER_DB
+      MYSQL_PASSWORD: $PASSWORD_DB
+      MYSQL_ROOT_PASSWORD: $ROOT_PASSWORD_DB
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql  -
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: sh -c "./wait-for-it.sh web:8000 && celery -A BooksLibrary worker --loglevel=info"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+      - web
+
